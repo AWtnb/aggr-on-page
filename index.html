@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>行を集計</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&display=swap" rel="stylesheet">
+<style>
+table {
+    border-collapse: collapse;
+}
+th, td {
+    border: 1px solid #555;
+}
+</style>
+</head>
+<body>
+    <h1>行を集計！</h1>
+    <textarea class="ui"></textarea>
+    <input type="button" value="集計" onclick="aggregate()">
+    <div class="output">
+    <table>
+        <thead>
+            <tr>
+                <th>項目</th>
+                <th>カウント</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    </div>
+<script>
+
+function resetTable(tbody) {
+    const maxRow = tbody.rows.length;
+    for (let r = maxRow - 1; r >= 0; r--) {
+        tbody.deleteRow(r);
+    }
+}
+
+function linesArray(multiline) {
+    return multiline.split(/\n/).map(line => String(line));
+}
+
+function aggregate() {
+    const output = document.querySelector(".output table tbody");
+    resetTable(output);
+
+    const userInput = document.querySelector(".ui").value;
+    const map = new Map();
+    linesArray(userInput).filter(line => String(line).trim().length > 0).forEach(line => {
+        if (map.has(line)) {
+            map.set(line, map.get(line) + 1);
+        }
+        else {
+            map.set(line, 1);
+        }
+    });
+    const agr = [];
+    map.forEach((count, line) => {
+        const row = output.insertRow(-1);
+        const cell1 = row.insertCell(0);
+        const cell2 = row.insertCell(1);
+        cell1.innerHTML = line;
+        cell2.innerHTML = count;
+    });
+}
+
+</script>
+
+</body>
+
+</html>
